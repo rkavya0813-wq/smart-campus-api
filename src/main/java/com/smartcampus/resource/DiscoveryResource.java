@@ -5,7 +5,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-@Path("/api/v1")
+@Path("/")
 public class DiscoveryResource {
 
     @GET
@@ -15,8 +15,8 @@ public class DiscoveryResource {
                 "Smart Campus API",
                 "1.0.0",
                 "admin@smartcampus.com",
-                "https://api.smartcampus.com/api/v1/rooms",
-                "https://api.smartcampus.com/api/v1/sensors"
+                "http://localhost:8080/api/v1/rooms",
+                "http://localhost:8080/api/v1/sensors"
         );
     }
 
