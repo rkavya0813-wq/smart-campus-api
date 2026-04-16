@@ -42,15 +42,18 @@ public class SensorRoomResource {
 
     @DELETE
     @Path("/{roomId}")
-    public void deleteRoom(@PathParam("roomId") String roomId) {
+    public Response deleteRoom(@PathParam("roomId") String roomId) {
         Room room = DataStore.rooms.get(roomId);
         if (room == null) {
             throw new WebApplicationException(404);
         }
         if (!room.getSensorIds().isEmpty()) {
-            throw new WebApplicationException("Cannot delete room with sensors", 409);
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("{\"error\": \"Cannot delete room with sensors\"}")
+                    .build();
         }
         DataStore.rooms.remove(roomId);
+        return Response.noContent().build();
     }
 
     public static class ErrorResponse {
