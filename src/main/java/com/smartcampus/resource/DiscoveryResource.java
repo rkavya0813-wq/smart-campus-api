@@ -20,6 +20,12 @@ public class DiscoveryResource {
         );
     }
 
+    @GET
+    @Path("/error-test")
+    public void triggerError() {
+        throw new RuntimeException("Test 500 error");
+    }
+
     public static class DiscoveryResponse {
         private String apiName;
         private String version;

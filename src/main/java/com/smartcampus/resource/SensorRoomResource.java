@@ -28,7 +28,9 @@ public class SensorRoomResource {
                     .build();
         }
         DataStore.rooms.put(room.getId(), room);
-        return Response.ok(room).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(room)
+                .build();
     }
 
     @GET
