@@ -28,7 +28,6 @@ public class SensorReadingResource {
     public Response getReadings() {
         if (!DataStore.sensors.containsKey(sensorId)) {
             ErrorResponse errorResponse = new ErrorResponse(
-                    "Sensor not found",
                     "Sensor with id " + sensorId + " does not exist",
                     Response.Status.NOT_FOUND.getStatusCode()
             );
@@ -48,7 +47,6 @@ public class SensorReadingResource {
     public Response addReading(SensorReading reading) {
         if (reading == null) {
             ErrorResponse errorResponse = new ErrorResponse(
-                    "Invalid request",
                     "Reading body is required",
                     Response.Status.BAD_REQUEST.getStatusCode()
             );
@@ -59,7 +57,6 @@ public class SensorReadingResource {
 
         if (!DataStore.sensors.containsKey(sensorId)) {
             ErrorResponse errorResponse = new ErrorResponse(
-                    "Sensor not found",
                     "Sensor with id " + sensorId + " does not exist",
                     Response.Status.NOT_FOUND.getStatusCode()
             );
@@ -69,8 +66,8 @@ public class SensorReadingResource {
         }
 
         Sensor sensor = DataStore.sensors.get(sensorId);
-        if ("MAINTENANCE".equals(sensor.getStatus())) {
-            throw new SensorUnavailableException("Sensor is under maintenance");
+        if ("MAINTENANCE".equalsIgnoreCase(sensor.getStatus())) {
+            throw new SensorUnavailableException("Sensor is unavailable");
         }
 
         DataStore.readingsBySensor.computeIfAbsent(sensorId, k -> new ArrayList<>()).add(reading);

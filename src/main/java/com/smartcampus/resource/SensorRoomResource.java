@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.smartcampus.exception.RoomNotEmptyException;
 
 @Path("/rooms")
 @Produces(MediaType.APPLICATION_JSON)
@@ -48,9 +49,7 @@ public class SensorRoomResource {
             throw new WebApplicationException(404);
         }
         if (!room.getSensorIds().isEmpty()) {
-            return Response.status(Response.Status.CONFLICT)
-                    .entity("{\"error\": \"Cannot delete room with sensors\"}")
-                    .build();
+            throw new RoomNotEmptyException("Cannot delete room with sensors");
         }
         DataStore.rooms.remove(roomId);
         return Response.noContent().build();

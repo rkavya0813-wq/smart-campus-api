@@ -9,11 +9,10 @@ import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class LinkedResourceNotFoundExceptionMapper implements ExceptionMapper<LinkedResourceNotFoundException> {
-    
+
     @Override
     public Response toResponse(LinkedResourceNotFoundException exception) {
         ErrorResponse errorResponse = new ErrorResponse(
-                "Linked resource not found",
                 exception.getMessage(),
                 422
         );

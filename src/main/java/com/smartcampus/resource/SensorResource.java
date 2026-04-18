@@ -47,7 +47,7 @@ public class SensorResource {
     public Sensor createSensor(Sensor sensor) {
         Room room = DataStore.rooms.get(sensor.getRoomId());
         if (room == null) {
-            throw new LinkedResourceNotFoundException("Room with id " + sensor.getRoomId() + " does not exist");
+            throw new LinkedResourceNotFoundException("Room not found for sensor");
         }
         DataStore.sensors.put(sensor.getId(), sensor);
         room.getSensorIds().add(sensor.getId());

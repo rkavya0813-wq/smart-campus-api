@@ -2,15 +2,13 @@ package com.smartcampus.exception;
 
 public class ErrorResponse {
     private String error;
-    private String message;
     private int status;
 
     public ErrorResponse() {
     }
 
-    public ErrorResponse(String error, String message, int status) {
+    public ErrorResponse(String error, int status) {
         this.error = error;
-        this.message = message;
         this.status = status;
     }
 
@@ -20,14 +18,6 @@ public class ErrorResponse {
 
     public void setError(String error) {
         this.error = error;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public int getStatus() {
