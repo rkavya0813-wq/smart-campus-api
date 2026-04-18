@@ -13,26 +13,28 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Path("/sensors")
+@Path("/sensors/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SensorResource {
 
     @GET
-    public List<Sensor> getAllSensors(@QueryParam("type") String type) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSensors(@QueryParam("type") String type) {
         List<Sensor> sensors = new ArrayList<>(DataStore.sensors.values());
         if (type != null && !type.isEmpty()) {
             sensors.removeIf(sensor -> !type.equals(sensor.getType()));
         }
-        return sensors;
+        return Response.ok(sensors).build();
     }
 
     @GET
-    @Path("/{sensorId}")
+    @Path("{sensorId}")
     public Sensor getSensor(@PathParam("sensorId") String sensorId) {
         Sensor sensor = DataStore.sensors.get(sensorId);
         if (sensor == null) {
@@ -50,5 +52,10 @@ public class SensorResource {
         DataStore.sensors.put(sensor.getId(), sensor);
         room.getSensorIds().add(sensor.getId());
         return sensor;
+    }
+
+    @Path("{sensorId}/readings")
+    public SensorReadingResource getSensorReadingResource(@PathParam("sensorId") String sensorId) {
+        return new SensorReadingResource(sensorId);
     }
 }
