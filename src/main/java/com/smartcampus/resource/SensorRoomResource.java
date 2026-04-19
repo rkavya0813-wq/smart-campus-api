@@ -2,6 +2,8 @@ package com.smartcampus.resource;
 
 import com.smartcampus.model.Room;
 import com.smartcampus.store.DataStore;
+import com.smartcampus.exception.ErrorResponse;
+import com.smartcampus.exception.ResourceNotFoundException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -22,9 +24,28 @@ public class SensorRoomResource {
 
     @POST
     public Response createRoom(Room room) {
+        if (room == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ErrorResponse("Room body is required", Response.Status.BAD_REQUEST.getStatusCode()))
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
+        if (room.getId() == null || room.getId().trim().isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ErrorResponse("Room id is required", Response.Status.BAD_REQUEST.getStatusCode()))
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
+        if (room.getName() == null || room.getName().trim().isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(new ErrorResponse("Room name is required", Response.Status.BAD_REQUEST.getStatusCode()))
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
         if (DataStore.rooms.containsKey(room.getId())) {
             return Response.status(Response.Status.CONFLICT)
-                    .entity("{\"error\": \"Room already exists\"}")
+                    .entity(new ErrorResponse("Room already exists", Response.Status.CONFLICT.getStatusCode()))
+                    .type(MediaType.APPLICATION_JSON)
                     .build();
         }
         DataStore.rooms.put(room.getId(), room);
@@ -38,7 +59,7 @@ public class SensorRoomResource {
     public Room getRoom(@PathParam("roomId") String roomId) {
         Room room = DataStore.rooms.get(roomId);
         if (room == null) {
-            throw new WebApplicationException(404);
+            throw new ResourceNotFoundException("Room not found");
         }
         return room;
     }
@@ -48,7 +69,7 @@ public class SensorRoomResource {
     public Response deleteRoom(@PathParam("roomId") String roomId) {
         Room room = DataStore.rooms.get(roomId);
         if (room == null) {
-            throw new WebApplicationException(404);
+            throw new ResourceNotFoundException("Room not found");
         }
         if (!room.getSensorIds().isEmpty()) {
             throw new RoomNotEmptyException("Cannot delete room with sensors");
@@ -57,19 +78,4 @@ public class SensorRoomResource {
         return Response.noContent().build();
     }
 
-    public static class ErrorResponse {
-        private String error;
-
-        public ErrorResponse(String error) {
-            this.error = error;
-        }
-
-        public String getError() {
-            return error;
-        }
-
-        public void setError(String error) {
-            this.error = error;
-        }
-    }
 }

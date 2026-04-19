@@ -15,8 +15,10 @@ public class DiscoveryResource {
                 "Smart Campus API",
                 "1.0.0",
                 "admin@smartcampus.com",
-                "http://localhost:8080/api/v1/rooms",
-                "http://localhost:8080/api/v1/sensors"
+            new Resources(
+                "/api/v1/rooms",
+                "/api/v1/sensors"
+            )
         );
     }
 
@@ -30,16 +32,14 @@ public class DiscoveryResource {
         private String apiName;
         private String version;
         private String adminContact;
-        private String roomsLink;
-        private String sensorsLink;
+        private Resources resources;
 
         public DiscoveryResponse(String apiName, String version, String adminContact,
-                                String roomsLink, String sensorsLink) {
+                                Resources resources) {
             this.apiName = apiName;
             this.version = version;
             this.adminContact = adminContact;
-            this.roomsLink = roomsLink;
-            this.sensorsLink = sensorsLink;
+            this.resources = resources;
         }
 
         public String getApiName() {
@@ -66,20 +66,38 @@ public class DiscoveryResource {
             this.adminContact = adminContact;
         }
 
-        public String getRoomsLink() {
-            return roomsLink;
+        public Resources getResources() {
+            return resources;
         }
 
-        public void setRoomsLink(String roomsLink) {
-            this.roomsLink = roomsLink;
+        public void setResources(Resources resources) {
+            this.resources = resources;
+        }
+    }
+
+    public static class Resources {
+        private String rooms;
+        private String sensors;
+
+        public Resources(String rooms, String sensors) {
+            this.rooms = rooms;
+            this.sensors = sensors;
         }
 
-        public String getSensorsLink() {
-            return sensorsLink;
+        public String getRooms() {
+            return rooms;
         }
 
-        public void setSensorsLink(String sensorsLink) {
-            this.sensorsLink = sensorsLink;
+        public void setRooms(String rooms) {
+            this.rooms = rooms;
+        }
+
+        public String getSensors() {
+            return sensors;
+        }
+
+        public void setSensors(String sensors) {
+            this.sensors = sensors;
         }
     }
 }

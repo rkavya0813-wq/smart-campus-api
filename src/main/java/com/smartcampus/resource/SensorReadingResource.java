@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Produces(MediaType.APPLICATION_JSON)
 public class SensorReadingResource {
@@ -51,8 +52,17 @@ public class SensorReadingResource {
                     Response.Status.BAD_REQUEST.getStatusCode()
             );
             return Response.status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.APPLICATION_JSON)
                     .entity(errorResponse)
                     .build();
+        }
+
+        if (reading.getId() == null || reading.getId().trim().isEmpty()) {
+            reading.setId(UUID.randomUUID().toString());
+        }
+
+        if (reading.getTimestamp() == 0) {
+            reading.setTimestamp(System.currentTimeMillis());
         }
 
         if (!DataStore.sensors.containsKey(sensorId)) {
