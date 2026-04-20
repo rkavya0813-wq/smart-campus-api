@@ -5,8 +5,10 @@ import com.smartcampus.store.DataStore;
 import com.smartcampus.exception.ErrorResponse;
 import com.smartcampus.exception.ResourceNotFoundException;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ public class SensorRoomResource {
     }
 
     @POST
-    public Response createRoom(Room room) {
+    public Response createRoom(Room room, @Context UriInfo uriInfo) {
         if (room == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ErrorResponse("Room body is required", Response.Status.BAD_REQUEST.getStatusCode()))
@@ -49,13 +51,17 @@ public class SensorRoomResource {
                     .build();
         }
         DataStore.rooms.put(room.getId(), room);
-        return Response.status(Response.Status.CREATED)
-                .entity(room)
-                .build();
+        return Response.created(
+                uriInfo.getBaseUriBuilder()
+                    .path("rooms")
+                    .path(room.getId())
+                    .build())
+            .entity(room)
+            .build();
     }
 
     @GET
-    @Path("/{roomId}")
+    @Path("{roomId}")
     public Room getRoom(@PathParam("roomId") String roomId) {
         Room room = DataStore.rooms.get(roomId);
         if (room == null) {
@@ -65,7 +71,7 @@ public class SensorRoomResource {
     }
 
     @DELETE
-    @Path("/{roomId}")
+    @Path("{roomId}")
     public Response deleteRoom(@PathParam("roomId") String roomId) {
         Room room = DataStore.rooms.get(roomId);
         if (room == null) {

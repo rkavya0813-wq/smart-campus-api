@@ -13,13 +13,15 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Path("/sensors/")
+@Path("/sensors")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SensorResource {
@@ -28,8 +30,10 @@ public class SensorResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSensors(@QueryParam("type") String type) {
         List<Sensor> sensors = new ArrayList<>(DataStore.sensors.values());
-        if (type != null && !type.isEmpty()) {
-            sensors.removeIf(sensor -> !type.equals(sensor.getType()));
+        if (type != null && !type.trim().isEmpty()) {
+            String normalizedType = type.trim();
+            sensors.removeIf(sensor -> sensor.getType() == null
+                    || !sensor.getType().equalsIgnoreCase(normalizedType));
         }
         return Response.ok(sensors).build();
     }
@@ -45,7 +49,7 @@ public class SensorResource {
     }
 
     @POST
-    public Response createSensor(Sensor sensor) {
+    public Response createSensor(Sensor sensor, @Context UriInfo uriInfo) {
         if (sensor == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(new ErrorResponse("Sensor body is required", Response.Status.BAD_REQUEST.getStatusCode()))
@@ -76,9 +80,13 @@ public class SensorResource {
         }
         DataStore.sensors.put(sensor.getId(), sensor);
         room.getSensorIds().add(sensor.getId());
-        return Response.status(Response.Status.CREATED)
-                .entity(sensor)
-                .build();
+        return Response.created(
+                uriInfo.getBaseUriBuilder()
+                    .path("sensors")
+                    .path(sensor.getId())
+                    .build())
+            .entity(sensor)
+            .build();
     }
 
     @Path("{sensorId}/readings")
