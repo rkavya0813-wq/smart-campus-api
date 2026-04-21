@@ -97,17 +97,6 @@ curl -i -X DELETE http://localhost:8080/api/v1/rooms/R101
 
 ## Conceptual Report Answers
 
-INFORMATICS INSTITUTE OF TECHNOLOGY
-In collaboration with
-UNIVERSITY OF WESTMINSTER
-
-5COSC022C.2
-CLIENT-SERVER ARCHITECTURES
-
-Name: Rashmi Kavya Dissanayake
-UOW ID: w19856926
-IIT NO: 20222048
-
 ## Question 1
 In JAX-RS, the resource classes are usually instantiated on a request-by-request basis; that is, a new instance is created with each incoming HTTP request. This helps ensure that request-specific data is not accidentally shared between different clients.
 In my implementation resource classes do not contain shared data. Rather, the data of all applications are stored in a central in-memory store in the form of a HashMap and ArrayList. This enables the data to be maintained between requests.
