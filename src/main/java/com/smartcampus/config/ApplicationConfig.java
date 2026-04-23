@@ -9,6 +9,7 @@ import com.smartcampus.resource.SensorResource;
 import com.smartcampus.filter.LoggingFilter;
 import com.smartcampus.mapper.GlobalExceptionMapper;
 import com.smartcampus.mapper.LinkedResourceNotFoundExceptionMapper;
+import com.smartcampus.mapper.NotSupportedExceptionMapper;
 import com.smartcampus.mapper.ResourceNotFoundExceptionMapper;
 import com.smartcampus.mapper.RoomNotEmptyExceptionMapper;
 import com.smartcampus.mapper.SensorUnavailableExceptionMapper;
@@ -21,6 +22,7 @@ public class ApplicationConfig extends ResourceConfig {
         register(SensorRoomResource.class);
         register(SensorResource.class);
         register(LinkedResourceNotFoundExceptionMapper.class);
+        register(NotSupportedExceptionMapper.class);
         register(ResourceNotFoundExceptionMapper.class);
         register(RoomNotEmptyExceptionMapper.class);
         register(SensorUnavailableExceptionMapper.class);
